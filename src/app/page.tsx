@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import FloatingHearts from "../components/FloatingHearts";
 import useHasMounted from "../hooks/useHasMounted";
 
-// Sparkle Rain Component
+// Sparkle Rain
 const SparkleRain = () => {
   const sparkles = Array.from({ length: 35 });
   return (
@@ -28,7 +28,9 @@ const SparkleRain = () => {
 
 export default function Home() {
   const hasMounted = useHasMounted();
-  const [stage, setStage] = useState<"ask" | "correct" | "wrong" | "letter" | "letter2" | "final">("ask");
+  const [stage, setStage] = useState<
+    "ask" | "correct" | "wrong" | "letter" | "letter2" | "final" | "iloveyou"
+  >("ask");
   const [name, setName] = useState("");
   const [typedWords, setTypedWords] = useState<string[]>([]);
   const [wordIndex, setWordIndex] = useState(0);
@@ -36,6 +38,7 @@ export default function Home() {
   const [wordIndex2, setWordIndex2] = useState(0);
   const [showClickHint1, setShowClickHint1] = useState(false);
   const [showClickHint2, setShowClickHint2] = useState(false);
+  const [noClickScale, setNoClickScale] = useState(1);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -97,7 +100,12 @@ Dinesh`;
     setStage("letter2");
   };
 
-  const goToFinal = () => setStage("final");
+  const goToFinal = () => {
+    setNoClickScale(1);
+    setStage("final");
+  };
+
+  const goToILoveYou = () => setStage("iloveyou");
 
   useEffect(() => {
     if (stage === "letter" && wordIndex < words1.length) {
@@ -253,11 +261,9 @@ Dinesh`;
 
                 <div ref={scrollRef} />
 
-                {(stage === "letter" && wordIndex >= words1.length) && (
+                {stage === "letter" && wordIndex >= words1.length && (
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
-                    {showClickHint1 && (
-                      <span className="text-sm text-pink-700 animate-pulse">Click this</span>
-                    )}
+                    {showClickHint1 && <span className="text-sm text-pink-700 animate-pulse">Click this</span>}
                     <button
                       onClick={goToLetter2}
                       className="text-3xl text-pink-500 hover:text-pink-700 animate-wiggle"
@@ -267,11 +273,9 @@ Dinesh`;
                   </div>
                 )}
 
-                {(stage === "letter2" && wordIndex2 >= words2.length) && (
+                {stage === "letter2" && wordIndex2 >= words2.length && (
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
-                    {showClickHint2 && (
-                      <span className="text-sm text-pink-700 animate-pulse">Click this</span>
-                    )}
+                    {showClickHint2 && <span className="text-sm text-pink-700 animate-pulse">Click this</span>}
                     <button
                       onClick={goToFinal}
                       className="text-3xl text-pink-500 hover:text-pink-700 animate-wiggle"
@@ -293,8 +297,47 @@ Dinesh`;
                 transition={transition}
                 className={cardBase}
               >
-                <h1 className="text-2xl sm:text-3xl text-pink-800 text-center">
+                <h1 className="text-2xl sm:text-3xl text-pink-800 text-center mb-4">
                   You’re mine forever, there’s no refunds 🌹🌹
+                </h1>
+                <h2 className="text-xl sm:text-2xl text-pink-700 mb-6">Do you love me?</h2>
+
+                <div className="flex justify-center items-center gap-4">
+                  <button
+                    onClick={goToILoveYou}
+                    className="bg-pink-500 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-all"
+                  >
+                    Yes
+                  </button>
+
+                  {noClickScale > 0 && (
+                    <button
+                      onClick={() => setNoClickScale((prev) => Math.max(0, prev - 0.2))}
+                      className="bg-red-400 text-white px-6 py-3 rounded-lg hover:bg-red-500 transition-all"
+                      style={{
+                        transform: `scale(${noClickScale})`,
+                        opacity: noClickScale,
+                      }}
+                    >
+                      No
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {stage === "iloveyou" && (
+              <motion.div
+                key="iloveyou"
+                variants={variants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={transition}
+                className={cardBase}
+              >
+                <h1 className="text-2xl sm:text-3xl text-pink-700 text-center leading-snug">
+                  You're the best. I love you 💖🥹🌸
                 </h1>
               </motion.div>
             )}
@@ -302,6 +345,7 @@ Dinesh`;
         </div>
       </div>
 
+      {/* Global styles */}
       <style jsx global>{`
         @keyframes blink {
           0%, 100% { opacity: 1; }
