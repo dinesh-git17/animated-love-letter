@@ -29,7 +29,7 @@ const SparkleRain = () => {
 export default function Home() {
   const hasMounted = useHasMounted();
   const [stage, setStage] = useState<
-    "ask" | "correct" | "wrong" | "letter" | "letter2" | "final" | "iloveyou"
+    "ask" | "correct" | "wrong" | "letter" | "letter2" | "final" | "iloveyou" | "ending"
   >("ask");
   const [name, setName] = useState("");
   const [typedWords, setTypedWords] = useState<string[]>([]);
@@ -38,6 +38,7 @@ export default function Home() {
   const [wordIndex2, setWordIndex2] = useState(0);
   const [showClickHint1, setShowClickHint1] = useState(false);
   const [showClickHint2, setShowClickHint2] = useState(false);
+  const [showClickHint3, setShowClickHint3] = useState(false);
   const [noClickScale, setNoClickScale] = useState(1);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -105,7 +106,25 @@ Dinesh`;
     setStage("final");
   };
 
-  const goToILoveYou = () => setStage("iloveyou");
+  const goToILoveYou = () => {
+    setStage("iloveyou");
+    setShowClickHint3(true);
+    setTimeout(() => setShowClickHint3(false), 2000);
+  };
+
+  const goToEnding = () => {
+    if (audioRef.current) {
+      const fade = setInterval(() => {
+        if (audioRef.current!.volume > 0.05) {
+          audioRef.current!.volume -= 0.05;
+        } else {
+          audioRef.current!.volume = 0;
+          clearInterval(fade);
+        }
+      }, 300);
+    }
+    setStage("ending");
+  };
 
   useEffect(() => {
     if (stage === "letter" && wordIndex < words1.length) {
@@ -152,6 +171,7 @@ Dinesh`;
 
   if (!hasMounted) return null;
 
+  // Layout & variants to be reused
   const cardBase =
     "bg-white/80 p-8 sm:p-12 rounded-3xl shadow-lg backdrop-blur-md max-w-2xl w-full text-center overflow-hidden";
 
@@ -171,15 +191,7 @@ Dinesh`;
         <div className="flex flex-col justify-center items-center min-h-full">
           <AnimatePresence mode="wait">
             {stage === "ask" && (
-              <motion.div
-                key="ask"
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={transition}
-                className={cardBase}
-              >
+              <motion.div {...motionProps} className={cardBase}>
                 <h1 className="text-3xl sm:text-4xl text-pink-800 mb-6">What’s your name, my love?</h1>
                 <input
                   value={name}
@@ -197,15 +209,7 @@ Dinesh`;
             )}
 
             {stage === "correct" && (
-              <motion.div
-                key="correct"
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={transition}
-                className={cardBase}
-              >
+              <motion.div {...motionProps} className={cardBase}>
                 <h1 className="text-3xl sm:text-4xl text-pink-700 mb-6">
                   Perfect. You’re the one I was looking for.
                 </h1>
@@ -219,15 +223,7 @@ Dinesh`;
             )}
 
             {stage === "wrong" && (
-              <motion.div
-                key="wrong"
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={transition}
-                className={cardBase}
-              >
+              <motion.div {...motionProps} className={cardBase}>
                 <h1 className="text-3xl text-red-600 mb-6">Oops! Wrong person.</h1>
                 <button
                   onClick={() => {
@@ -263,7 +259,9 @@ Dinesh`;
 
                 {stage === "letter" && wordIndex >= words1.length && (
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
-                    {showClickHint1 && <span className="text-sm text-pink-700 animate-pulse">Click this</span>}
+                    {showClickHint1 && (
+                      <span className="text-sm text-pink-700 animate-pulse">Click this</span>
+                    )}
                     <button
                       onClick={goToLetter2}
                       className="text-3xl text-pink-500 hover:text-pink-700 animate-wiggle"
@@ -275,7 +273,9 @@ Dinesh`;
 
                 {stage === "letter2" && wordIndex2 >= words2.length && (
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
-                    {showClickHint2 && <span className="text-sm text-pink-700 animate-pulse">Click this</span>}
+                    {showClickHint2 && (
+                      <span className="text-sm text-pink-700 animate-pulse">Click this</span>
+                    )}
                     <button
                       onClick={goToFinal}
                       className="text-3xl text-pink-500 hover:text-pink-700 animate-wiggle"
@@ -288,20 +288,11 @@ Dinesh`;
             )}
 
             {stage === "final" && (
-              <motion.div
-                key="final"
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={transition}
-                className={cardBase}
-              >
+              <motion.div {...motionProps} className={cardBase}>
                 <h1 className="text-2xl sm:text-3xl text-pink-800 text-center mb-4">
                   You’re mine forever, there’s no refunds 🌹🌹
                 </h1>
                 <h2 className="text-xl sm:text-2xl text-pink-700 mb-6">Do you love me?</h2>
-
                 <div className="flex justify-center items-center gap-4">
                   <button
                     onClick={goToILoveYou}
@@ -309,7 +300,6 @@ Dinesh`;
                   >
                     Yes
                   </button>
-
                   {noClickScale > 0 && (
                     <button
                       onClick={() => setNoClickScale((prev) => Math.max(0, prev - 0.2))}
@@ -327,25 +317,74 @@ Dinesh`;
             )}
 
             {stage === "iloveyou" && (
+              <motion.div {...motionProps} className={cardBase}>
+                <h1 className="text-2xl sm:text-3xl text-pink-700 text-center leading-snug">
+                  You&apos;re the best. I love you 💖🥹🌸
+                </h1>
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                  {showClickHint3 && (
+                    <span className="text-sm text-pink-700 animate-pulse">Click this</span>
+                  )}
+                  <button
+                    onClick={goToEnding}
+                    className="text-3xl text-pink-500 hover:text-pink-700 animate-wiggle"
+                  >
+                    ↓
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {stage === "ending" && (
               <motion.div
-                key="iloveyou"
+                key="ending"
                 variants={variants}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 transition={transition}
-                className={cardBase}
+                className={`${cardBase} flex flex-col items-center justify-center`}
               >
-                <h1 className="text-2xl sm:text-3xl text-pink-700 text-center leading-snug">
-                  You're the best. I love you 💖🥹🌸
-                </h1>
+                {/* Heart Fill with Fade */}
+                <svg
+                  viewBox="0 0 32 29.6"
+                  className="w-32 h-32 mb-6 animate-heartFade"
+                >
+                  <path
+                    d="M23.6,0c-3.4,0-6.4,2.1-7.6,5.1C14.8,2.1,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,7,7.6,11.7,16,21.2
+                    c8.4-9.6,16-14.2,16-21.2C32,3.8,28.2,0,23.6,0z"
+                    fill="#f43f5e"
+                  />
+                </svg>
+
+                {/* Centered Handwritten Text */}
+                <svg
+                  viewBox="0 0 300 80"
+                  className="w-full max-w-xs sm:max-w-md stroke-pink-700"
+                >
+                  <text
+                    x="50%"
+                    y="50"
+                    textAnchor="middle"
+                    fontSize="40"
+                    fontFamily="'Sacramento', cursive"
+                    fill="none"
+                    strokeWidth="1"
+                    strokeDasharray="500"
+                    strokeDashoffset="500"
+                    className="animate-writeText"
+                  >
+                    I love you
+                  </text>
+                </svg>
               </motion.div>
             )}
+
           </AnimatePresence>
         </div>
       </div>
 
-      {/* Global styles */}
+      {/* GLOBAL STYLES */}
       <style jsx global>{`
         @keyframes blink {
           0%, 100% { opacity: 1; }
@@ -375,7 +414,42 @@ Dinesh`;
         .animate-wiggle {
           animation: wiggle 0.6s ease-in-out infinite;
         }
+
+        @keyframes writeText {
+          to {
+            stroke-dashoffset: 0;
+          }
+        }
+        .animate-writeText {
+          animation: writeText 3s ease forwards;
+        }
+
+        @keyframes heartFill {
+          0% {
+            transform: scale(0.5);
+            opacity: 0;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        .animate-heartFill {
+          animation: heartFill 2s ease-in-out forwards;
+        }
       `}</style>
     </div>
   );
 }
+
+const motionProps = {
+  variants: {
+    initial: { opacity: 0, scale: 0.95 },
+    animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.95 },
+  },
+  initial: "initial",
+  animate: "animate",
+  exit: "exit",
+  transition: { duration: 0.6 },
+};
