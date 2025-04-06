@@ -44,6 +44,18 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
+  const motionProps = {
+    variants: {
+      initial: { opacity: 0, scale: 0.95 },
+      animate: { opacity: 1, scale: 1 },
+      exit: { opacity: 0, scale: 0.95 },
+    },
+    initial: "initial",
+    animate: "animate",
+    exit: "exit",
+    transition: { duration: 0.6 },
+  };
+
   const letter1 = `Dear Carolina,
 
 Ever since your name entered my world, something in me changed.
@@ -191,7 +203,7 @@ Dinn`;
         <div className="flex flex-col justify-center items-center min-h-full">
           <AnimatePresence mode="wait">
             {stage === "ask" && (
-              <motion.div {...motionProps} className={cardBase}>
+              <motion.div key="ask" {...motionProps} className={cardBase}>
                 <h1 className="text-3xl sm:text-4xl text-pink-800 mb-6">What’s your name, my love?</h1>
                 <input
                   value={name}
@@ -258,7 +270,7 @@ Dinn`;
                 <div ref={scrollRef} />
 
                 {stage === "letter" && wordIndex >= words1.length && (
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                  <div className="absolute bottom-15 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
                     {showClickHint1 && (
                       <span className="text-sm text-pink-700 animate-pulse">Click this</span>
                     )}
@@ -272,7 +284,7 @@ Dinn`;
                 )}
 
                 {stage === "letter2" && wordIndex2 >= words2.length && (
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                  <div className="absolute bottom-15 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
                     {showClickHint2 && (
                       <span className="text-sm text-pink-700 animate-pulse">Click this</span>
                     )}
@@ -288,7 +300,7 @@ Dinn`;
             )}
 
             {stage === "final" && (
-              <motion.div {...motionProps} className={cardBase}>
+              <motion.div key="final" {...motionProps} className={cardBase}>
                 <h1 className="text-2xl sm:text-3xl text-pink-800 text-center mb-4">
                   You’re mine forever, there’s no refunds 🌹
                 </h1>
@@ -321,7 +333,7 @@ Dinn`;
                 <h1 className="text-2xl sm:text-3xl text-pink-700 text-center leading-snug">
                   You&apos;re the best. I love you 💖🥹🌸
                 </h1>
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                <div className="absolute bottom-15 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
                   {showClickHint3 && (
                     <span className="text-sm text-pink-700 animate-pulse">Click this</span>
                   )}
@@ -441,15 +453,3 @@ Dinn`;
     </div>
   );
 }
-
-const motionProps = {
-  variants: {
-    initial: { opacity: 0, scale: 0.95 },
-    animate: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 0.95 },
-  },
-  initial: "initial",
-  animate: "animate",
-  exit: "exit",
-  transition: { duration: 0.6 },
-};
