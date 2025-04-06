@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💌 Animated Love Letter
 
-## Getting Started
+A beautifully crafted, animated love letter experience built with **Next.js**, **Tailwind CSS**, **Framer Motion**, and **TypeScript** — designed to win hearts with floating emojis, typewriter love notes, and elegant interactive transitions.
 
-First, run the development server:
+## ✨ Features
+
+- ❤️ Floating hearts in a zero-gravity environment
+- 💬 Typewriter-style romantic letters revealed word-by-word
+- 🎵 Background music that plays and fades out smoothly
+- ✨ Sparkle rain and smooth page transitions
+- ❓ “Do you love me?” interaction with playful button shrinking
+- 💖 Final handwritten “I love you” animation with heart fill
+- 📱 Fully responsive and mobile-ready
+
+## 🛠️ Technologies Used
+
+- [Next.js 15](https://nextjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS v3](https://tailwindcss.com/)
+- [Framer Motion](https://www.framer.com/motion/)
+- [Google Fonts](https://fonts.google.com/)
+- CSS animations + SVG path effects
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/dinesh-git17/animated-love-letter.git
+cd animated-love-letter
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 4. Build for production
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm run start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 5. Naming Logic
+- This letter was made specifically for someone
+- Update the name in the following snippet to proceed with another name:
+```typescript
+  const handleSubmit = () => {
+    if (name.trim().toLowerCase() === "carolina") {
+      setStage("correct");
+    } else {
+      setStage("wrong");
+    }
+  };
+```
 
-## Learn More
+- Update the love letter as required
 
-To learn more about Next.js, take a look at the following resources:
+## 🔊 Background Music
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The music file (`love_theme.mp3`) should be placed inside the `/public` folder:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+public/
+├── love_theme.mp3
+```
 
-## Deploy on Vercel
+You can replace it with your own `.mp3` romantic track.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎨 Customization
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Change letter content in `page.tsx`
+- Customize emojis, sparkles, and final messages
+- Add more stages or cards for extended interactions
+
+## 💖 Credits
+
+Created with love by [Dinesh Dawonauth](https://github.com/dinesh-git17)
+
+---
+
+_This project is a heartfelt gift. If you're reading this and smiling, then it’s already done its job._
