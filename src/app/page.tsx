@@ -59,7 +59,7 @@ My future wife.
 If this letter makes you smile, then my heart is smiling too.
 
 Yours forever,
-Dinesh`;
+Dinn`;
 
   const letter2 = `Carolina,
 
@@ -76,7 +76,7 @@ You are beautiful in ways words don’t fully capture.
 But this letter is my attempt anyway.
 
 Forever yours,
-Dinesh`;
+Dinn`;
 
   const words1 = letter1.split(/(\s+)/);
   const words2 = letter2.split(/(\s+)/);
@@ -290,7 +290,7 @@ Dinesh`;
             {stage === "final" && (
               <motion.div {...motionProps} className={cardBase}>
                 <h1 className="text-2xl sm:text-3xl text-pink-800 text-center mb-4">
-                  You’re mine forever, there’s no refunds 🌹🌹
+                  You’re mine forever, there’s no refunds 🌹
                 </h1>
                 <h2 className="text-xl sm:text-2xl text-pink-700 mb-6">Do you love me?</h2>
                 <div className="flex justify-center items-center gap-4">
