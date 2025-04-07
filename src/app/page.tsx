@@ -46,14 +46,14 @@ export default function Home() {
 
   const motionProps = {
     variants: {
-      initial: { opacity: 0, scale: 0.95 },
-      animate: { opacity: 1, scale: 1 },
-      exit: { opacity: 0, scale: 0.95 },
+      initial: { opacity: 0, y: 40, scale: 0.95 },
+      animate: { opacity: 1, y: 0, scale: 1 },
+      exit: { opacity: 0, y: 40, scale: 0.95 },
     },
     initial: "initial",
     animate: "animate",
     exit: "exit",
-    transition: { duration: 0.6 },
+    transition: { duration: 0.8 },
   };
 
   const letter1 = `Dear Carolina,
@@ -143,7 +143,7 @@ Dinn`;
       const timeout = setTimeout(() => {
         setTypedWords((prev) => [...prev, words1[wordIndex]]);
         setWordIndex((prev) => prev + 1);
-      }, 180);
+      }, 220);
       return () => clearTimeout(timeout);
     }
   }, [wordIndex, stage]);
@@ -153,19 +153,21 @@ Dinn`;
       const timeout = setTimeout(() => {
         setTypedWords2((prev) => [...prev, words2[wordIndex2]]);
         setWordIndex2((prev) => prev + 1);
-      }, 180);
+      }, 220);
       return () => clearTimeout(timeout);
     }
   }, [wordIndex2, stage]);
 
   useEffect(() => {
-    if ((stage === "letter" || stage === "letter2") && audioRef.current) {
+    if (stage === "letter" && audioRef.current) {
+      audioRef.current.volume = 0.95;
       audioRef.current.play().catch(() => {});
     }
   }, [stage]);
+  
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [typedWords, typedWords2]);
 
   useEffect(() => {
@@ -183,20 +185,11 @@ Dinn`;
 
   if (!hasMounted) return null;
 
-  // Layout & variants to be reused
   const cardBase =
-    "bg-white/80 p-8 sm:p-12 rounded-3xl shadow-lg backdrop-blur-md max-w-2xl w-full text-center overflow-hidden";
-
-  const variants = {
-    initial: { opacity: 0, scale: 0.95 },
-    animate: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 0.95 },
-  };
-
-  const transition = { duration: 0.6 };
+    "bg-white/70 p-8 sm:p-12 rounded-3xl shadow-2xl backdrop-blur-lg border border-pink-300/30 max-w-2xl w-full text-center overflow-hidden";
 
   return (
-    <div className="relative w-screen h-screen bg-[#FFB6C1] overflow-hidden px-4">
+    <div className="relative w-screen h-screen bg-gradient-to-b from-[#ffe4e6] via-[#ffcdd6] to-[#ffb6c1] overflow-hidden px-4">
       <FloatingHearts />
       <audio ref={audioRef} src="/love_theme.mp3" loop />
       <div className="relative z-10 w-full h-full max-w-2xl mx-auto overflow-y-auto min-h-screen py-6">
@@ -252,11 +245,7 @@ Dinn`;
             {(stage === "letter" || stage === "letter2") && (
               <motion.div
                 key={stage}
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={transition}
+                {...motionProps}
                 className={`${cardBase} text-left text-pink-800 whitespace-pre-line leading-relaxed relative`}
               >
                 {(stage === "letter" && wordIndex >= words1.length) ||
@@ -350,30 +339,17 @@ Dinn`;
             {stage === "ending" && (
               <motion.div
                 key="ending"
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={transition}
+                {...motionProps}
                 className={`${cardBase} flex flex-col items-center justify-center`}
               >
-                {/* Heart Fill with Fade */}
-                <svg
-                  viewBox="0 0 32 29.6"
-                  className="w-32 h-32 mb-6 animate-heartFade"
-                >
+                <svg viewBox="0 0 32 29.6" className="w-32 h-32 mb-6 animate-heartFade">
                   <path
                     d="M23.6,0c-3.4,0-6.4,2.1-7.6,5.1C14.8,2.1,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,7,7.6,11.7,16,21.2
-                    c8.4-9.6,16-14.2,16-21.2C32,3.8,28.2,0,23.6,0z"
+                      c8.4-9.6,16-14.2,16-21.2C32,3.8,28.2,0,23.6,0z"
                     fill="#f43f5e"
                   />
                 </svg>
-
-                {/* Centered Handwritten Text */}
-                <svg
-                  viewBox="0 0 300 80"
-                  className="w-full max-w-xs sm:max-w-md stroke-pink-700"
-                >
+                <svg viewBox="0 0 300 80" className="w-full max-w-xs sm:max-w-md stroke-pink-700">
                   <text
                     x="50%"
                     y="50"
@@ -391,12 +367,10 @@ Dinn`;
                 </svg>
               </motion.div>
             )}
-
           </AnimatePresence>
         </div>
       </div>
 
-      {/* GLOBAL STYLES */}
       <style jsx global>{`
         @keyframes blink {
           0%, 100% { opacity: 1; }
@@ -436,18 +410,18 @@ Dinn`;
           animation: writeText 3s ease forwards;
         }
 
-        @keyframes heartFill {
-          0% {
+        @keyframes heartFade {
+          from {
             transform: scale(0.5);
             opacity: 0;
           }
-          100% {
+          to {
             transform: scale(1);
             opacity: 1;
           }
         }
-        .animate-heartFill {
-          animation: heartFill 2s ease-in-out forwards;
+        .animate-heartFade {
+          animation: heartFade 2s ease-in-out forwards;
         }
       `}</style>
     </div>
